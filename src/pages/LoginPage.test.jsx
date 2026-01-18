@@ -15,6 +15,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
+import { AuthProvider } from '../context/AuthContext'
 import LoginPage from './LoginPage'
 
 // Mock useNavigate
@@ -23,15 +24,18 @@ vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom')
   return {
     ...actual,
-    useNavigate: () => mockNavigate
+    useNavigate: () => mockNavigate,
+    useLocation: () => ({ state: null, pathname: '/login' })
   }
 })
 
-// Helper to render with Router
+// Helper to render with Router and AuthProvider
 const renderLoginPage = () => {
   return render(
     <BrowserRouter>
-      <LoginPage />
+      <AuthProvider>
+        <LoginPage />
+      </AuthProvider>
     </BrowserRouter>
   )
 }
@@ -188,7 +192,7 @@ describe('KAN-3: Frontend Login UI', () => {
       fireEvent.click(screen.getByTestId('login-button'))
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/admin/dashboard')
+        expect(mockNavigate).toHaveBeenCalledWith('/admin/dashboard', { replace: true })
       })
     })
   })

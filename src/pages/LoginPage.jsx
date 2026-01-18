@@ -14,7 +14,8 @@
  */
 
 import { useState } from 'react'
-import { useNavigate, Link as RouterLink } from 'react-router-dom'
+import { useNavigate, Link as RouterLink, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import {
   Container,
   Box,
@@ -32,6 +33,11 @@ const API_URL = 'http://localhost:3000'
 
 function LoginPage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { login } = useAuth()
+
+  // Get redirect destination from location state
+  const from = location.state?.from?.pathname || '/admin/dashboard'
 
   // Form state
   const [email, setEmail] = useState('')
@@ -122,12 +128,11 @@ function LoginPage() {
         return
       }
 
-      // Store token in localStorage
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('user', JSON.stringify(data.user))
+      // Use AuthContext to login
+      login(data.user, data.token)
 
-      // Redirect to dashboard
-      navigate('/admin/dashboard')
+      // Redirect to original destination or dashboard
+      navigate(from, { replace: true })
 
     } catch (err) {
       // Handle network errors
