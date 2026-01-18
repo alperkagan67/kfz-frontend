@@ -3,6 +3,7 @@ import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 import VehicleList from './pages/VehicleList'
+import VehicleDetails from './pages/VehicleDetails'
 import SellVehicle from './pages/SellVehicle'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
@@ -16,6 +17,7 @@ function App() {
         {/* Public routes */}
         <Route index element={<Home />} />
         <Route path="vehicles" element={<VehicleList />} />
+        <Route path="vehicles/:id" element={<VehicleDetails />} />
         <Route path="sell" element={<SellVehicle />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />

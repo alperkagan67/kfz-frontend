@@ -1,9 +1,11 @@
-import { 
-  Card, 
-  CardMedia, 
-  CardContent, 
-  Typography, 
-  Box, 
+import { Link as RouterLink } from 'react-router-dom'
+import {
+  Card,
+  CardMedia,
+  CardContent,
+  CardActionArea,
+  Typography,
+  Box,
   Chip,
   Divider
 } from '@mui/material'
@@ -20,19 +22,24 @@ function VehicleCard({ vehicle }) {
   })
 
   return (
-    <Card 
-      sx={{ 
+    <Card
+      sx={{
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         transition: 'transform 0.2s, box-shadow 0.2s',
         '&:hover': {
           transform: 'translateY(-4px)',
-          boxShadow: 8,
+          boxShadow: 8
         },
-        borderRadius: 2,
+        borderRadius: 2
       }}
     >
+      <CardActionArea
+        component={RouterLink}
+        to={`/vehicles/${vehicle.id}`}
+        sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}
+      >
       <CardMedia
         component="img"
         height="200"
@@ -99,6 +106,7 @@ function VehicleCard({ vehicle }) {
           ))}
         </Box>
       </CardContent>
+      </CardActionArea>
     </Card>
   )
 }
