@@ -1,3 +1,9 @@
+/**
+ * Vehicle Card Component
+ *
+ * KFZ-19: Added favorite button with heart icon
+ */
+
 import { Link as RouterLink } from 'react-router-dom'
 import {
   Card,
@@ -7,19 +13,34 @@ import {
   Typography,
   Box,
   Chip,
-  Divider
+  Divider,
+  IconButton,
+  Tooltip,
+  Zoom
 } from '@mui/material'
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation'
 import SpeedIcon from '@mui/icons-material/Speed'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import { useFavorites } from '../context/FavoritesContext'
 
 function VehicleCard({ vehicle }) {
+  const { isFavorite, toggleFavorite } = useFavorites()
+  const isVehicleFavorite = isFavorite(vehicle.id)
+
   const formatter = new Intl.NumberFormat('de-DE', {
     style: 'currency',
     currency: 'EUR',
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   })
+
+  const handleFavoriteClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    toggleFavorite(vehicle.id)
+  }
 
   return (
     <Card
@@ -32,9 +53,45 @@ function VehicleCard({ vehicle }) {
           transform: 'translateY(-4px)',
           boxShadow: 8
         },
-        borderRadius: 2
+        borderRadius: 2,
+        position: 'relative'
       }}
     >
+      {/* Favorite Button */}
+      <Tooltip
+        title={isVehicleFavorite ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufuegen'}
+        TransitionComponent={Zoom}
+      >
+        <IconButton
+          onClick={handleFavoriteClick}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            zIndex: 2,
+            bgcolor: 'rgba(255, 255, 255, 0.9)',
+            '&:hover': {
+              bgcolor: 'rgba(255, 255, 255, 1)',
+              transform: 'scale(1.1)'
+            },
+            transition: 'all 0.2s'
+          }}
+          data-testid="favorite-button"
+          aria-label={isVehicleFavorite ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufuegen'}
+        >
+          {isVehicleFavorite ? (
+            <FavoriteIcon
+              sx={{
+                color: 'error.main',
+                animation: 'pulse 0.3s ease-in-out'
+              }}
+            />
+          ) : (
+            <FavoriteBorderIcon sx={{ color: 'grey.600' }} />
+          )}
+        </IconButton>
+      </Tooltip>
+
       <CardActionArea
         component={RouterLink}
         to={`/vehicles/${vehicle.id}`}
@@ -51,7 +108,7 @@ function VehicleCard({ vehicle }) {
         <Typography variant="h5" component="h2" gutterBottom fontWeight="bold">
           {vehicle.brand} {vehicle.model}
         </Typography>
-        
+
         <Typography variant="h6" color="primary" gutterBottom>
           {formatter.format(vehicle.price)}
         </Typography>
@@ -97,7 +154,7 @@ function VehicleCard({ vehicle }) {
               key={index}
               label={feature}
               size="small"
-              sx={{ 
+              sx={{
                 bgcolor: 'primary.main',
                 color: 'white',
                 fontSize: '0.7rem'
