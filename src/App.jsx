@@ -5,6 +5,8 @@ import Home from './pages/Home'
 import VehicleList from './pages/VehicleList'
 import VehicleDetails from './pages/VehicleDetails'
 import Favorites from './pages/Favorites'
+import Compare from './pages/Compare'
+import CompareFloatingButton from './components/CompareFloatingButton'
 import SellVehicle from './pages/SellVehicle'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
@@ -13,6 +15,8 @@ import RegisterPage from './pages/RegisterPage'
 
 function App() {
   return (
+    <>
+    <CompareFloatingButton />
     <Routes>
       <Route path="/" element={<Layout />}>
         {/* Public routes */}
@@ -20,6 +24,7 @@ function App() {
         <Route path="vehicles" element={<VehicleList />} />
         <Route path="vehicles/:id" element={<VehicleDetails />} />
         <Route path="favorites" element={<Favorites />} />
+        <Route path="compare" element={<Compare />} />
         <Route path="sell" element={<SellVehicle />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
@@ -36,6 +41,7 @@ function App() {
         />
       </Route>
     </Routes>
+    </>
   )
 }
 

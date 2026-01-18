@@ -2,6 +2,7 @@
  * Vehicle Card Component
  *
  * KFZ-19: Added favorite button with heart icon
+ * KFZ-20: Added compare checkbox
  */
 
 import { Link as RouterLink } from 'react-router-dom'
@@ -16,18 +17,23 @@ import {
   Divider,
   IconButton,
   Tooltip,
-  Zoom
+  Zoom,
+  Checkbox
 } from '@mui/material'
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation'
 import SpeedIcon from '@mui/icons-material/Speed'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
 import { useFavorites } from '../context/FavoritesContext'
+import { useCompare } from '../context/CompareContext'
 
 function VehicleCard({ vehicle }) {
   const { isFavorite, toggleFavorite } = useFavorites()
+  const { isInCompare, toggleCompare, canAddMore } = useCompare()
   const isVehicleFavorite = isFavorite(vehicle.id)
+  const isVehicleInCompare = isInCompare(vehicle.id)
 
   const formatter = new Intl.NumberFormat('de-DE', {
     style: 'currency',
@@ -42,6 +48,14 @@ function VehicleCard({ vehicle }) {
     toggleFavorite(vehicle.id)
   }
 
+  const handleCompareClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    toggleCompare(vehicle.id)
+  }
+
+  const compareDisabled = !isVehicleInCompare && !canAddMore
+
   return (
     <Card
       sx={{
@@ -54,43 +68,90 @@ function VehicleCard({ vehicle }) {
           boxShadow: 8
         },
         borderRadius: 2,
-        position: 'relative'
+        position: 'relative',
+        border: isVehicleInCompare ? '2px solid' : 'none',
+        borderColor: isVehicleInCompare ? 'primary.main' : 'transparent'
       }}
     >
-      {/* Favorite Button */}
-      <Tooltip
-        title={isVehicleFavorite ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufuegen'}
-        TransitionComponent={Zoom}
+      {/* Action Buttons Container */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 8,
+          right: 8,
+          zIndex: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 0.5
+        }}
       >
-        <IconButton
-          onClick={handleFavoriteClick}
-          sx={{
-            position: 'absolute',
-            top: 8,
-            right: 8,
-            zIndex: 2,
-            bgcolor: 'rgba(255, 255, 255, 0.9)',
-            '&:hover': {
-              bgcolor: 'rgba(255, 255, 255, 1)',
-              transform: 'scale(1.1)'
-            },
-            transition: 'all 0.2s'
-          }}
-          data-testid="favorite-button"
-          aria-label={isVehicleFavorite ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufuegen'}
+        {/* Favorite Button */}
+        <Tooltip
+          title={isVehicleFavorite ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufuegen'}
+          TransitionComponent={Zoom}
+          placement="left"
         >
-          {isVehicleFavorite ? (
-            <FavoriteIcon
+          <IconButton
+            onClick={handleFavoriteClick}
+            sx={{
+              bgcolor: 'rgba(255, 255, 255, 0.9)',
+              '&:hover': {
+                bgcolor: 'rgba(255, 255, 255, 1)',
+                transform: 'scale(1.1)'
+              },
+              transition: 'all 0.2s'
+            }}
+            data-testid="favorite-button"
+            aria-label={isVehicleFavorite ? 'Aus Favoriten entfernen' : 'Zu Favoriten hinzufuegen'}
+          >
+            {isVehicleFavorite ? (
+              <FavoriteIcon sx={{ color: 'error.main' }} />
+            ) : (
+              <FavoriteBorderIcon sx={{ color: 'grey.600' }} />
+            )}
+          </IconButton>
+        </Tooltip>
+
+        {/* Compare Checkbox */}
+        <Tooltip
+          title={
+            compareDisabled
+              ? 'Maximal 3 Fahrzeuge zum Vergleich'
+              : isVehicleInCompare
+              ? 'Aus Vergleich entfernen'
+              : 'Zum Vergleich hinzufuegen'
+          }
+          TransitionComponent={Zoom}
+          placement="left"
+        >
+          <span>
+            <IconButton
+              onClick={handleCompareClick}
+              disabled={compareDisabled}
               sx={{
-                color: 'error.main',
-                animation: 'pulse 0.3s ease-in-out'
+                bgcolor: isVehicleInCompare
+                  ? 'primary.main'
+                  : 'rgba(255, 255, 255, 0.9)',
+                color: isVehicleInCompare ? 'white' : 'grey.600',
+                '&:hover': {
+                  bgcolor: isVehicleInCompare
+                    ? 'primary.dark'
+                    : 'rgba(255, 255, 255, 1)',
+                  transform: 'scale(1.1)'
+                },
+                '&.Mui-disabled': {
+                  bgcolor: 'rgba(200, 200, 200, 0.5)'
+                },
+                transition: 'all 0.2s'
               }}
-            />
-          ) : (
-            <FavoriteBorderIcon sx={{ color: 'grey.600' }} />
-          )}
-        </IconButton>
-      </Tooltip>
+              data-testid="compare-button"
+              aria-label={isVehicleInCompare ? 'Aus Vergleich entfernen' : 'Zum Vergleich hinzufuegen'}
+            >
+              <CompareArrowsIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </Box>
 
       <CardActionArea
         component={RouterLink}

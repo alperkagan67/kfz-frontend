@@ -5,6 +5,7 @@ import { ThemeProvider, CssBaseline } from '@mui/material'
 import { createTheme } from '@mui/material/styles'
 import { AuthProvider } from './context/AuthContext'
 import { FavoritesProvider } from './context/FavoritesContext'
+import { CompareProvider } from './context/CompareContext'
 import App from './App'
 import './index.css'
 
@@ -26,7 +27,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <CssBaseline />
         <AuthProvider>
           <FavoritesProvider>
-            <App />
+            <CompareProvider>
+              <App />
+            </CompareProvider>
           </FavoritesProvider>
         </AuthProvider>
       </ThemeProvider>
