@@ -2,6 +2,7 @@
  * Navbar Component
  *
  * KFZ-19: Added favorites badge with count
+ * KFZ-21: Added theme toggle button
  */
 
 import { Link } from 'react-router-dom'
@@ -18,6 +19,7 @@ import {
 } from '@mui/material'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import { useFavorites } from '../context/FavoritesContext'
+import ThemeToggle from './ThemeToggle'
 
 function Navbar() {
   const { favoritesCount } = useFavorites()
@@ -74,6 +76,9 @@ function Navbar() {
                 </Badge>
               </IconButton>
             </Tooltip>
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             <Button
               component={Link}

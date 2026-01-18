@@ -1,30 +1,23 @@
+/**
+ * Main Entry Point
+ *
+ * KFZ-21: Replaced static ThemeProvider with ThemeContextProvider for Dark Mode
+ */
+
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { ThemeProvider, CssBaseline } from '@mui/material'
-import { createTheme } from '@mui/material/styles'
 import { AuthProvider } from './context/AuthContext'
 import { FavoritesProvider } from './context/FavoritesContext'
 import { CompareProvider } from './context/CompareContext'
+import { ThemeContextProvider } from './context/ThemeContext'
 import App from './App'
 import './index.css'
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#1a237e',
-    },
-    secondary: {
-      main: '#ff3d00',
-    },
-  },
-})
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
+      <ThemeContextProvider>
         <AuthProvider>
           <FavoritesProvider>
             <CompareProvider>
@@ -32,7 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             </CompareProvider>
           </FavoritesProvider>
         </AuthProvider>
-      </ThemeProvider>
+      </ThemeContextProvider>
     </BrowserRouter>
   </React.StrictMode>
 )
